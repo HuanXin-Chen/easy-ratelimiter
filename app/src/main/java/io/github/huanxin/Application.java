@@ -25,9 +25,14 @@ public class Application {
         SpringApplication.run(Application.class);
     }
     
-    @AccessInterceptor
+    @AccessInterceptor(key = "fingerprint", fallbackMethod = "loginErr", permitsPerSecond = 1.0d, blacklistCount = 10)
     @RequestMapping(value = "login",method = RequestMethod.GET)
-    public String login( ) {
-        return "模拟登录";
+    public String login(String fingerprint,String uId,String token) {
+        log.info("模拟登录 fingerprint:{}", fingerprint);
+        return "模拟登录:登录成功 " + uId;
+    }
+
+    public String loginErr(String fingerprint,String uId,String token) {
+        return "频次限制:请勿恶意访问 " + uId;
     }
 }
